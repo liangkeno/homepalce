@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+    </default>
+    <homeplace_index_index>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+           <!-- <block type="homeplace/homeplace" name="homeplaceforfront" template="homeplace/homeplace.phtml" />-->
+            <block type="homeplace/homeplace" name="homeplaceforfront" template="homeplace/homeframe.phtml" />
+        </reference>
+    </homeplace_index_index>
+
+    <homeplace_index_section>
+        <reference name="root">
+            <block type="homeplace/homeplace" name="root" output="toHtml" template="homeplace/homesection.phtml" />
+        </reference>
+    </homeplace_index_section>
+
+
+</layout> 

@@ -1,0 +1,39 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2016/4/20
+ * Time: 16:17
+ */
+
+$mediaUrl= Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+
+$homeImageUrl=$mediaUrl."homeplace/";
+$activityUrl=$mediaUrl."homeplace/section/";
+$adSliderUrl=$mediaUrl."homeplace/images/";
+$collectionList=$this->getMyCollection();
+foreach($collectionList as $collection){
+if($collection->getStatus()==1){
+?>
+<div class="stContainer" id="section<?php echo $collection->getSectionId()?>">
+    <div class="loading"></div>
+</div>
+
+<?php }} ?>
+
+    <script>
+
+        jQuery(document).ready(function(){
+            jQuery('.bxslider').bxSlider({
+                auto: true
+            });
+
+            var containerDom=jQuery('.stContainer');
+            var sectionUrl="<?php echo $this->getUrl('homeplace/index/section') ?>"+"id/";
+            myModule(containerDom,sectionUrl);
+
+        });
+
+
+    </script>
+

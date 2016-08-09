@@ -1,0 +1,250 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2016/4/20
+ * Time: 16:17
+ */
+
+$mediaUrl= Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+$currentDate = '';
+$homeImageUrl=$mediaUrl."homeplace/";
+$adSliderUrl=$mediaUrl."homeplace/images/";
+$listSliderUrl=$mediaUrl."homeplace/section/";
+$id=$this->getRequest()->getParam('id');
+$collection=null;
+if($id){
+    $collection=$this->getMyCollection($id);
+}
+if($collection->getStatus()==1){
+    $AdStyle=$collection->getAdStyle();
+?>
+    <h2 class="section_title"><?php echo $collection->getSectionName() ?></h2>
+    <div class="homeblock_section clearfix">
+        <div class="homeblock left">
+            <div class="left_innerTop">
+                <a href="<?php echo $collection->getAdActivityLink() ?>">
+                    <img src="<?php echo $mediaUrl.$collection->getAdActivityPath() ?>" alt="<?php echo $collection->getSectionName() ?>">
+                </a>
+            </div>
+            <div class="left_innerBottom">
+                <div class="cateItems">
+                    <?php
+                        if($collection->getCateStatus()){
+                            $currentCateInfo=$this->loadCategoryInfo($collection->getCateSelect());
+                            $subCategoryIdArr=$this->getSubCategories($collection->getCateSelect());
+                            $len=count($subCategoryIdArr);
+                            ?>
+                    <strong><?php echo $currentCateInfo->getName();?>:</strong>
+                           <!-- 获取自定义类目的子类-->
+                            <?php
+                            for($i=0;$i<$len;$i++){
+                                $subCategoryInfoObj=$this->loadCategoryInfo($subCategoryIdArr[$i]);
+                            ?>
+                    <a href="<?php echo $subCategoryInfoObj->getUrlPath(); ?>"><?php echo $subCategoryInfoObj->getName(); ?> </a>
+
+                    <?php
+                            if($i<$len-1){
+                                echo "|";
+                            }
+                            } }else {?>
+                            <!-- 获取自定义活动简介-->
+                    <p><a href=""><?php echo $collection->getAdActivityBrief() ?></a></p>
+                     <?php } ?>
+
+                </div>
+            </div>
+        </div>
+        <div class="homeblock mid sectionQuick">
+            <div class="mid_inner clearfix">
+                <ul>
+                    <?php
+                    $isArray=false;
+                    $productListObj=null;
+                    $productListArr=array();
+                        switch($collection->getProductListStatus()){
+                        //switch(3){
+                            case 1:
+                                $productListObj=$this->getNewproduct($collection->getCateSelect());
+                                break;
+                            case 3:
+                                $productListStr=$collection->getFourProducts();
+                                $productListArr=explode(',',$productListStr);
+                                $isArray=true;
+                                break;
+                            default:
+                                $productListObj=$this->bestSellerCollection($collection->getCateSelect());
+                                break;
+                        }
+                     if(!$isArray){
+                        /*数据集为对象*/
+                        $n=1;
+                         foreach($productListObj as $productObj){
+
+                       ?>
+
+                     <li class="<?php if($n%2==0){ echo "p_second";}if($n==3||$n==4){echo " p_last_line";} ?>" >
+                         <a href="<?php echo $productObj->getProductUrl() ?>">
+                             <?php $_imgSize = 210; ?>
+                             <img
+                                 src="<?php echo $this->helper('catalog/image')->init($productObj, 'small_image')->resize($_imgSize); ?>"
+                                 alt="<?php echo $this->stripTags($this->getImageLabel($productObj, 'small_image'), null, true) ?>"/>
+                         </a>
+                         <?php
+                         if (Mage::getStoreConfig('quickview/general/enabled')) {
+                             ?>
+                             <input type="hidden" name="appthaAjaxLoading" id="appthaAjaxLoading"
+                                    value="<?php echo $this->getSkinUrl('facebox/loading.gif') ?>"/>
+                             <input type="hidden" name="appthaAjaxClose" id="appthaAjaxClose"
+                                    value="<?php echo $this->getSkinUrl('facebox/closelabel.png') ?>"/>
+                             <a rel="facebox"
+                                href="<?php echo Mage::helper('quickview')->getQuickViewUrl($productObj->getId()); ?>">
+                                 <em class="quickview"><em
+                                         class="btn-quickview"><?php echo $this->__('Quick View') ?></em></em>
+                             </a>
+                         <?php } ?>
+
+                     </li>
+
+
+                    <?php  $n=$n+1; }
+                     }else{
+                    /*后台自定义的产品列表*/
+                    $productListArrLen=count($productListArr);
+                    for($listNum=0;$listNum<$productListArrLen;$listNum++){
+
+                        $customizeProduct=$this->getCustomizeProduct(intval(trim($productListArr[$listNum])));
+                        $n=$listNum+1;
+
+                    ?>
+                    <li class="<?php if($n%2==0){ echo "p_second";}if($n==3||$n==4){echo " p_last_line";} ?>" >
+                        <a href="<?php echo $customizeProduct->getProductUrl() ?>">
+                            <?php $_imgSize = 189; ?>
+                            <img
+                                src="<?php echo $this->helper('catalog/image')->init($customizeProduct, 'small_image')->resize($_imgSize); ?>"
+                                alt="<?php echo $this->stripTags($this->getImageLabel($customizeProduct, 'small_image'), null, true) ?>"/>
+                        </a>
+                        <?php
+                        if (Mage::getStoreConfig('quickview/general/enabled')) {
+                            ?>
+                            <input type="hidden" name="appthaAjaxLoading" id="appthaAjaxLoading"
+                                   value="<?php echo $this->getSkinUrl('facebox/loading.gif') ?>"/>
+                            <input type="hidden" name="appthaAjaxClose" id="appthaAjaxClose"
+                                   value="<?php echo $this->getSkinUrl('facebox/closelabel.png') ?>"/>
+                            <a rel="facebox"
+                               href="<?php echo Mage::helper('quickview')->getQuickViewUrl($customizeProduct->getId()); ?>">
+                                <em class="quickview"><em
+                                        class="btn-quickview"><?php echo $this->__('Quick View') ?></em></em>
+                            </a>
+                        <?php } ?>
+
+
+                    </li>
+                    <?php }  }?>
+
+
+
+                </ul>
+            </div>
+        </div>
+        <div class="homeblock right">
+            <div class="right_inner">
+                <ul class="bxslider<?php echo $collection->getSectionId()?>">
+                    <?php
+                        $adSliderStr=$collection->getAdList();
+                        $adSliderArr=explode(',',$adSliderStr);
+                        $sliderLen=count($adSliderArr);
+                        for($sliderNum=0;$sliderNum<$sliderLen;$sliderNum++){
+                            $sliderCollection=$this->getAdSlider($adSliderArr[$sliderNum]);
+
+                    ?>
+                    <li>
+                        <a href="<?php echo $sliderCollection->getAdLink() ?>">
+                            <img src="<?php echo $adSliderUrl.$sliderCollection->getAdPath() ?>" alt=" <?php echo $sliderCollection->getAdName() ?>">
+                        </a>
+                        <div class="right_info_wrapper">
+                            <div class="right_info" <?php if($AdStyle){
+                                echo "style='background-color:".$AdStyle."'";
+                            } ?>>
+                                <span><?php echo $sliderCollection->getAdName() ?></span>
+                                <p><?php echo $sliderCollection->getAdBrief() ?></p>
+                            </div>
+                        </div>
+                    </li>
+                    <?php }?>
+
+                </ul>
+            </div>
+        </div>
+
+        <!--滚动产品列表-->
+        <div class="sectionBottom">
+            <div class="productList<?php echo $collection->getSectionId()?> sectionQuick">
+                <ul class="listSlider clearfix">
+                    <?php
+                    $productListCollection= $this->getProductList($collection->getCateSelect());
+                    foreach($productListCollection as $product){
+
+                    ?>
+                    <li>
+                        <a href="<?php echo $product->getProductUrl() ?>">
+                            <?php $_imgSize = 210; ?>
+                            <img
+                                src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize($_imgSize); ?>"
+                                alt="<?php echo $this->stripTags($this->getImageLabel($product, 'small_image'), null, true) ?>"/>
+                        </a>
+
+                        <h3 class="section-product-name"><a href="<?php echo $product->getProductUrl() ?>"><?php echo $product->getName() ?></a></h3>
+                       <div class="section-price">
+                           <span>
+                             <?php
+                             /**
+                              * Display Product Price
+                              */
+                             $Price = $product->getPrice();
+                             $SplPrice = $product->getSpecialPrice();
+                             $DealExpireDate = $product->getspecial_to_date();
+                             /**
+                              * Checking mew special price has some values
+                              * and new deal expiration date is not equal to the empty value
+                              * and date of new deal expiration date is greater than or equal to the current date
+                              * if so show the new special price
+                              * else display the new price value only
+                              */
+                             if (!empty ($SplPrice) && ($DealExpireDate != '') && ($DealExpireDate >= $currentDate)) {
+
+                                 echo Mage::helper('core')->currency($SplPrice, true, false);
+                             } else {
+                                 echo Mage::helper('core')->currency($Price, true, false);
+                             }?>
+                           </span>
+                       </div>
+                        <!--快速查看产品-->
+                        <?php
+                        if (Mage::getStoreConfig('quickview/general/enabled')) {
+                            ?>
+                            <input type="hidden" name="appthaAjaxLoading" id="appthaAjaxLoading"
+                                   value="<?php echo $this->getSkinUrl('facebox/loading.gif') ?>"/>
+                            <input type="hidden" name="appthaAjaxClose" id="appthaAjaxClose"
+                                   value="<?php echo $this->getSkinUrl('facebox/closelabel.png') ?>"/>
+                            <a rel="facebox"
+                               href="<?php echo Mage::helper('quickview')->getQuickViewUrl($product->getId()); ?>">
+                                <em class="quickview"><em
+                                        class="btn-quickview"><?php echo $this->__('Quick View') ?></em></em>
+                            </a>
+                        <?php } ?>
+
+
+                    </li>
+                    <?php  } ?>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+
+<?php } ?>
+
+

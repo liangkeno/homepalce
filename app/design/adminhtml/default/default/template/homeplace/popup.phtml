@@ -1,0 +1,59 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2016/4/22
+ * Time: 15:57
+ */
+
+ echo $this->getFormInitScripts() ?>
+    <script type="text/javascript">
+        function openMyPopup() {
+            //获取adid加入到url
+            var stringAd=document.getElementById('ad_list').value;
+            var url='';
+            if(stringAd !=''){
+                var strUrl=encodeURI(stringAd);
+                url = '<?php echo $this->getUrl('homeplace/adminhtml_homeplace/addad') ?>id/'+strUrl;
+            }else{
+                url = '<?php echo $this->getUrl('homeplace/adminhtml_homeplace/addad') ?>';
+            }
+
+            if ($('browser_window') && typeof(Windows) != 'undefined') {
+                Windows.focus('browser_window');
+                return;
+            }
+
+            var dialogWindow = Dialog.info(null, {
+                closable:true,
+                resizable:false,
+                draggable:true,
+                className:'magento',
+                windowClassName:'popup-window',
+                title:'Test popup Dialog',
+                position:'absolute',
+                top:60,
+                width:1000,
+                height:600,
+                zIndex:1000,
+                recenterAuto:false,
+                hideEffect:Element.hide,
+                showEffect:Element.show,
+                id:'browser_window',
+                url:url,
+                onClose:function (param, el) {
+                    var iframDoc=document.getElementById('browser_window_content').contentWindow.document;
+                    console.log(iframDoc.getElementById('sliderAd').value);
+                    document.getElementById('ad_list').value=iframDoc.getElementById('sliderAd').value;
+                    console.log(document.getElementById('ad_list').value);
+                }
+            });
+        }
+
+        function closePopup() {
+            Windows.close('browser_window');
+        }
+
+    </script>
+
+<?php echo $this->getFormScripts() ?>

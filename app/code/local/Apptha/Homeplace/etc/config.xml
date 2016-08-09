@@ -1,0 +1,127 @@
+<?xml version='1.0'?>
+<config>
+    <modules>
+        <Apptha_Homeplace>
+            <version>0.1.0</version>
+        </Apptha_Homeplace>
+    </modules>
+    <frontend>
+        <routers>
+            <homeplace>
+                <use>standard</use>
+                <args>
+                    <module>Apptha_Homeplace</module>
+                    <frontName>homeplace</frontName>
+                </args>
+            </homeplace>
+        </routers>
+        <layout>
+            <updates>
+                <homeplace>
+                    <file>homeplace.xml</file>
+                </homeplace>
+            </updates>
+        </layout>
+    </frontend>
+    <admin>
+        <routers>
+            <homeplace>
+                <use>admin</use>
+                <args>
+                    <module>Apptha_Homeplace</module>
+                    <frontName>homeplace</frontName>
+                </args>
+            </homeplace>
+        </routers>
+    </admin>
+    <adminhtml>
+        <menu>
+            <homeplace module="homeplace">
+                <title>Homeplace</title>
+                <sort_order>71</sort_order>
+                <children>
+                    <items module="homeplace">
+                        <title>Section List</title>
+                        <sort_order>0</sort_order>
+                        <action>homeplace/adminhtml_homeplace</action>
+                    </items>
+                </children>
+            </homeplace>
+        </menu>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <Apptha_Homeplace>
+                            <title>Homeplace Module</title>
+                            <sort_order>10</sort_order>
+                        </Apptha_Homeplace>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <layout>
+            <updates>
+                <homeplace>
+                    <file>homeplace.xml</file>
+                </homeplace>
+            </updates>
+        </layout>
+    </adminhtml>
+    <global>
+        <models>
+            <homeplace>
+                <class>Apptha_Homeplace_Model</class>
+                <resourceModel>homeplace_mysql4</resourceModel>
+            </homeplace>
+            <homeplace_mysql4>
+                <class>Apptha_Homeplace_Model_Mysql4</class>
+                <entities>
+                    <homeplace>
+                        <table>homeplace</table>
+                    </homeplace>
+                    <productad>
+                        <table>home_product_ad</table>
+                    </productad>
+                </entities>
+            </homeplace_mysql4>
+        </models>
+        <resources>
+            <homeplace_setup>
+                <setup>
+                    <module>Apptha_Homeplace</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </homeplace_setup>
+            <homeplace_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </homeplace_write>
+            <homeplace_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </homeplace_read>
+        </resources>
+        <blocks>
+            <homeplace>
+                <class>Apptha_Homeplace_Block</class>
+            </homeplace>
+        </blocks>
+        <helpers>
+            <homeplace>
+                <class>Apptha_Homeplace_Helper</class>
+            </homeplace>
+        </helpers>
+    </global>
+
+
+
+
+</config>

@@ -1,0 +1,69 @@
+
+.clearfix:after{ content:".";display: block;height:0;clear:both;visibility:hidden;}
+.stContainer{width:1100px; margin:20px auto; height: 630px;}
+.stContainer .loading{background:url("../images/ajax-loader.gif") 50% 50% no-repeat #fff; width: 100%;height: 100%; }
+/*块布局*/
+.homeblock_section{ }
+.homeblock{ float: left; display: inline; height: 420px;background: #fff;}
+.left{width: 385px; overflow: hidden;}
+.mid{width: 419px;margin: 0 2px; background:none;}
+.right{ width: 292px; position:relative;}
+/*块内容样式*/
+
+.section_title{ margin: 10px 0px; border-bottom: 1px solid #000; display: inline-block;}
+.left_innerTop{ height: 300px;}
+.left_innerBottom{ height: 120px;}
+.cateItems{ padding: 15px; color: #d2d2d2;}
+.cateItems a{ color: #4e4e4e; padding: 0 5px;}
+.cateItems strong{ color: #000;}
+.right_info_wrapper{position: absolute; bottom:42px; text-align: center; width: 100%;}
+.right_info{  width: 80%; padding: 15px; background-color:#9228ce; display: inline-block;}
+.right_info span{ color: #fff; font-weight: bold;}
+.right_info p{ color: #d2d2d2;}
+.mid_inner li{ float:left; display: inline; width: 209px; margin:0 1px 1px 0;}
+.mid_inner a:first-child{ padding: 10px;background-color: #fff;}
+.mid_inner a:first-child:hover,.sectionBottom li a:hover{border-top: 1px solid #f2f2f2;}
+.mid_inner a{ display: block; line-height: 100%;}
+.mid_inner img{ width: 189px; height: 189px; vertical-align: middle;}
+.mid_inner .p_second{margin-right: 0;}
+.mid_inner .p_last_line{margin-bottom: 0;border-bottom: 1px solid #fff;}
+.sectionBottom{clear: both;padding-top: 2px;}
+.sectionBottom li{width: 218px;height: 210px;float:left;display: inline;margin-right: 2px;background-color: #fff; text-align:center;}
+.sectionBottom li a{padding: 10px 10px 5px 10px;display: inline-block;}
+.sectionBottom li img{width: 150px;height: 150px; vertical-align: middle;}
+.sectionBottom li:last-child{margin-right: 0;width: 220px;}
+.sectionBottom .section-product-name{ line-height: normal; text-align: left;font-weight: normal; margin: 0;}
+.section-product-name a{ color: #4e4e4e;padding: 0 10px;font-family: 'arialregular';font-size: 13px;text-transform: none;}
+.sectionBottom .section-product-name a{display:block;white-space:nowrap; overflow: hidden;position: relative;padding: 0 10px;}
+.sectionBottom .section-product-name a:hover{border: none;}
+.section-product-name a:after{content: "";pointer-events: none;position: absolute;width: 100px;height: 100%;top: 0; right: 0;background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));background-image: -ms-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));background-image: -o-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));background-image: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));}
+.sectionBottom .section-price{text-align: left; padding-left: 10px;}
+.section-price span{font-weight: bold; color: #000;}
+.sectionBottom .bx-controls-direction{ display: block;}
+/*.col1-layout .col-main{padding-top: 1000px;}*/
+
+/*css3特效*/
+.mid_inner li,.left,.right,.sectionBottom li{ -webkit-transition:all .2s linear;transition:all .2s linear;position: relative;}
+.mid_inner li:hover,.sectionBottom li:hover{
+    -webkit-box-shadow:0 10px 20px rgba(0,0,0,0.15);
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+    transform: translate3d(0,-2px,0);
+    z-index: 2;}
+.left:hover,.right:hover{
+    -webkit-box-shadow:0 10px 20px rgba(0,0,0,0.15);
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+    transform: translate3d(0,-2px,0);
+    z-index: 2;
+}
+/*幻灯片*/
+.bx-wrapper{position: relative;}
+.right_inner .bx-wrapper .bx-pager{text-align: center; position: absolute; bottom:10px; width: 100%;}
+.bx-pager-item{ display: inline-block;}
+.right_inner .bx-wrapper .bx-pager .bx-pager-item a.active,.right_inner .bx-wrapper .bx-pager .bx-pager-item a:hover{background-color: #f39800;}
+.right_inner .bx-wrapper .bx-pager .bx-pager-item a{display:block;text-indent: -9999px;margin:0 5px; width: 10px; height: 10px;background-color: #ccc; border-radius: 10px;}
+.bx-controls-direction .bx-prev{background-position:-3px 0; left: 0px;}
+.bx-controls-direction .bx-next{background-position:-32px 0; right: 0px;}
+.bx-controls-direction{display:none;}
+.right:hover .bx-controls-direction{display:block;}
+.right_inner .bx-controls .bx-pager{ display: block;}
+

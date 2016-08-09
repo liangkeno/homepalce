@@ -1,0 +1,273 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2016/4/25
+ * Time: 10:22
+ */
+
+
+?>
+<style>
+    .clearfix:after{ content:".";display: block;height:0;clear:both;visibility:hidden;}
+    .container{ width: 100%;}
+    .form-group{ margin-left: -15px; margin-right: -15px; margin-bottom: 15px;}
+    .control-label{ float: left;text-align: right; width: 20%; padding: 7px 10px 0 0;}
+    .inputWrapper{ float: left; width: 75%;}
+    .form-control{ height: 25px; width: 100%;}
+    .form-file{ padding-top: 7px;}
+    textarea.form-control{height: auto;}
+    .btn{ padding: 6px 12px; cursor: pointer;}
+    .add{ margin-left: 15px;}
+    .btnWrapper{width: 75%; margin-left: 20%;}
+    .fieldSet,.fieldSetData{ margin: 10px 0; border: 1px solid #ccc; padding-top: 15px; position: relative;}
+    .deleteBtn{position: absolute; right: 23px; bottom: 15px; display: inline;}
+
+</style>
+<div class="container">
+
+    <form action="<?php echo $this->getUrl('homeplace/adminhtml_homeplace/showpost'); ?>" method="post" id="advertForm" enctype="multipart/form-data">
+
+        <input name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>"/>
+        <div class="fieldSet" id="cloneSet" style="display: none;">
+            <input name="id[]" type="hidden" value=""/>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Name :</label>
+                <div class="inputWrapper">
+                    <input type="text" class="form-control" name="ad_name[]" placeholder="" value="">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Introduction :</label>
+                <div class="inputWrapper">
+                    <textarea type="text" name="ad_brief[]" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Link :</label>
+                <div class="inputWrapper">
+                    <input type="text" name="ad_link[]" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Image URL : </label>
+                <div class="inputWrapper">
+                    <input type="file" name="ad_path[]" class="form-file" >
+                </div>
+            </div>
+            <div class="deleteBtn">
+                <button id="deleteBtn" class="btn">Delete This</button>
+            </div>
+        </div>
+        <?php
+        $mediaUrl= Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+        $homeImageUrl=$mediaUrl."homeplace/images/";
+        $adId = $this->getRequest()->getParam('id');
+
+        if($adId){
+            $adIdArr=explode(',',urldecode($adId));
+            $len=count($adIdArr);
+            for($i=0;$i<$len;$i++){
+                $collection = $this->getAdData($adIdArr[$i]);
+                $productadId=$collection->getProductAdId();
+
+
+        ?>
+        <div class="fieldSetData" id="adverting<?php echo $productadId ?>">
+            <input name="id[]" type="hidden" value="<?php echo $productadId ?>"/>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Name </label>
+                <div class="inputWrapper">
+                    <input type="text" class="form-control" name="ad_name[]" placeholder="" value="<?php if($collection->getAdName() != ''){ echo $collection->getAdName();}  ?>">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Introduction </label>
+                <div class="inputWrapper">
+                    <textarea type="text" name="ad_brief[]" class="form-control" rows="3"><?php if($collection->getAdBrief() != ''){ echo $collection->getAdBrief();}  ?></textarea>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Link :</label>
+                <div class="inputWrapper">
+                    <input type="text" name="ad_link[]" class="form-control" value="<?php if($collection->getAdLink() != ''){ echo $collection->getAdLink();}  ?>"/>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label for="" class="control-label">Advertising Image URL </label>
+
+                <div class="inputWrapper">
+                    <input type="file" name="ad_path[]" class="form-file" >
+
+                    <?php if($collection->getAdPath() != ''){
+                        echo'<div>';
+                        echo ' <input name="updatepath[]" type="hidden" value="'.$collection->getAdPath().'"/>';
+                        echo ' <img src="'.$homeImageUrl.$collection->getAdPath().'" alt="" width="290px">';
+                        echo '</div>';
+                    }  ?>
+
+                </div>
+            </div>
+            <div class="deleteBtn">
+                <div id="deleteMessage"></div>
+                <input type="hidden" value="<?php echo $productadId;?>" id="product_ad_id<?php echo $productadId;?>" >
+                <button id="deleteBtnData<?php echo $productadId;?>" class="btn deleteBtnData" >Delete this advertising</button>
+            </div>
+        </div>
+        <?php } } ?>
+
+
+
+        <div class="btnWrapper" id="btnWrapper">
+            <input type="hidden" value="<?php if($adId){ echo urldecode($adId);} ?>" id="sliderAd">
+            <button type="submit" id="submin" class="btn save">submit</button>
+            <button class="btn add" id="addAdvertBtn">Add Adverting</button>
+            <button class="btn add" id="updateForSection">Update To Section</button>
+        </div>
+    </form>
+
+
+</div>
+
+<script>
+
+    var addAdvert=document.getElementById('addAdvertBtn');
+    var deleteBtn=document.getElementById('deleteBtn');
+    var updateForSection=document.getElementById('updateForSection');
+    //复制模块
+    var advertOperation=(function(){
+
+        var backObj={
+            copyAdvert:copyAdvert,
+            disabledDelete:disabledDelete,
+            updateSection:updateSection,
+            deleteAd:deleteAd
+        };
+        //复制一块
+        function copyAdvert(event){
+            var btnWrapper=document.getElementById('btnWrapper');
+            var cloneSet=document.getElementById('cloneSet');
+            //深度复制节点
+            var newNode=cloneSet.cloneNode(true);
+            if(event){
+                preventDefault();
+            }
+            cloneSet.parentNode.insertBefore(newNode,btnWrapper);
+            //更改button Id并设置监听
+            var showIdindex=resetId();
+            document.getElementById('cloneSet'+showIdindex).style.display='block';
+        }
+        //向ifram的父文档中的id赋值
+        function updateSection(){
+            preventDefault();
+            var _input = parent.document.getElementById('ad_list');
+            _input.value=document.getElementById('sliderAd').value;
+        }
+        //处理删除本cloneSet
+        function deleteThis(){
+            preventDefault();
+            var idIndex=this.getAttribute('id').slice(-1);
+            var thisCloneSet=document.querySelector('#cloneSet'+idIndex);
+            // 删除本节点
+            thisCloneSet.parentNode.removeChild(thisCloneSet);
+            resetId();
+        }
+        //重置节点Id与按钮Id,并添加监听事件
+        function resetId(){
+            var nodeList=document.querySelectorAll('#advertForm .fieldSet');
+            var btnList=document.querySelectorAll('#advertForm .deleteBtn .btn');
+            var len=nodeList.length;
+            for(var i=1;i<len;i++){
+                //移除之前的监听
+                btnList[i].removeEventListener('click',deleteThis,false);
+                btnList[i].setAttribute('id','deleteBtn'+i);
+                //更新当前的监听
+                var currentNode=document.querySelector('#deleteBtn'+i);
+                currentNode.addEventListener('click',deleteThis,false);
+                nodeList[i].setAttribute('id','cloneSet'+i);
+            }
+            return len-1;
+        }
+        //禁止删除
+        function disabledDelete(){
+            preventDefault();
+            alert("This can not be removed!");
+        }
+        //禁止默认提交
+        function preventDefault(){
+            if(event && event.preventDefault){
+                event.preventDefault();
+            }else{
+                window.event.returnValue = false;
+                return false;
+            }
+        }
+        //异步删除产品广告
+
+        function deleteAd(){
+            preventDefault();
+            if(window.confirm("Do you want to delete it?")){
+                var id=this.getAttribute('id').replace(/[^0-9]/ig,'');
+                console.log(id);
+                var productAdId=document.getElementById('product_ad_id'+id).value;
+                var url="<?php echo $this->getUrl('homeplace/adminhtml_homeplace/deleteAd') ?>id/"+productAdId;
+                var oXmlHttpRequest;
+                if(window.ActiveXObject){
+                    oXmlHttpRequest=new ActiveXObject('Microsoft.XMLHTTP');
+                }else{
+                    oXmlHttpRequest=new XMLHttpRequest();
+                }
+
+                oXmlHttpRequest.open("GET",url);
+                oXmlHttpRequest.send();
+                oXmlHttpRequest.onreadystatechange=function(){
+                    if(oXmlHttpRequest.readyState==4 && oXmlHttpRequest.status==200){
+                        if(oXmlHttpRequest.responseText){
+                            var childNode=document.getElementById("adverting"+id);
+                            childNode.parentNode.removeChild(childNode);
+
+                            var sliderAdValue=document.getElementById('sliderAd');
+                            var fieldSetData=document.querySelectorAll('.fieldSetData');
+                            var _input = parent.document.getElementById('ad_list');
+                            var idArr=[];
+                            //搜索存在产品ad的快，以《，》合并，添加到本页的临时input与父页的input中
+                            for(var i=0 ;i<fieldSetData.length;i++){
+                                idArr[i]=fieldSetData[i].getAttribute('id').replace(/[^0-9]/ig,"");
+                            }
+                            var inputValue=idArr.join(",");
+                            console.log(inputValue);
+                            sliderAdValue.value=_input.value=inputValue;
+                        }
+                    }
+                }
+            }else{
+                return false;
+            }
+
+        }
+        return backObj;
+    }());
+
+
+    //设置监听
+
+    <?php if($adId){?>
+    addAdvert.addEventListener('click',advertOperation.copyAdvert,false);
+    deleteBtn.addEventListener('click',advertOperation.disabledDelete,false);
+    updateForSection.addEventListener('click',advertOperation.updateSection,false);
+    <?php }else{ ?>
+    advertOperation.copyAdvert();
+    addAdvert.addEventListener('click',advertOperation.copyAdvert,false);
+    deleteBtn.addEventListener('click',advertOperation.disabledDelete,false);
+    updateForSection.addEventListener('click',advertOperation.updateSection,false);
+    <?php }?>
+
+    var deleteBtnDataList=document.querySelectorAll('.deleteBtnData');
+    var len=deleteBtnDataList.length;
+    //绑定需要删除的广告
+    for(var i=0;i<len;i++){
+        deleteBtnDataList[i].addEventListener('click',advertOperation.deleteAd,false);
+    }
+
+
+</script>

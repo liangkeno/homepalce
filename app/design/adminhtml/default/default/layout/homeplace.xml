@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <homeplace_adminhtml_homeplace_index>
+        <reference name="head">
+            <action method="setCanLoadExtJs">
+                <value>1</value>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="homeplace/adminhtml_homeplace" name="homeplacefroadmin" />
+        </reference>
+    </homeplace_adminhtml_homeplace_index>
+    <homeplace_adminhtml_homeplace_edit>
+        <reference name="head">
+            <action method="addItem">
+                <type>js_css</type>
+                <name>prototype/windows/themes/default.css</name>
+            </action>
+            <action method="addCss">
+                <name>lib/prototype/windows/themes/magento.css</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="homeplace/adminhtml_homeplace" name='inchoo.restconnect.adminhtml.homescreen' template="homeplace/popup.phtml">
+            </block>
+        </reference>
+    </homeplace_adminhtml_homeplace_edit>
+    <homeplace_adminhtml_homeplace_addad>
+        <reference name="head">
+            <action method="setTitle" translate="title">
+                <title>add slider ad list</title>
+            </action>
+
+        </reference>
+        <reference name="content">
+            <block type="homeplace/adminhtml_adverting" name="adverting" template="homeplace/adverting.phtml"/>
+        </reference>
+    </homeplace_adminhtml_homeplace_addad>
+
+
+</layout>
